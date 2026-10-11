@@ -1,13 +1,74 @@
 import Stop from './Stop';
 import NagelLeiste from './NagelLeiste';
-import { escenas } from '../data/escenas';
+import type { ReactNode } from 'react';
+import { recorridos } from '../data/escenas';
 
 const title = 'mt-4 text-5xl leading-[0.95] md:text-7xl';
 const body = 'mt-5 max-w-lg text-base text-creme/80 md:text-lg';
 
-export default function PortalWorld() {
+// Texto de cada parada, por id de escena: así sirve para los dos órdenes del recorrido.
+const textos: Record<string, { eyebrow: string; inhalt: ReactNode }> = {
+  start: {
+    eyebrow: 'Braids · Nails · Extensions',
+    inhalt: (
+      <>
+        <h1 className={title}>
+          Schönheit bis in die <em>Fingerspitzen</em>
+        </h1>
+        <p className={body}>Willkommen bei Braidz&apos;n Tips in Liechtenstein. Scroll dich hinein.</p>
+      </>
+    ),
+  },
+  studio: {
+    eyebrow: 'Das Studio',
+    inhalt: (
+      <>
+        <h2 className={title}>
+          Ein Ort zum <em>Durchatmen</em>
+        </h2>
+        <p className={body}>Lehn dich zurück: Kaffee, gute Musik und Hände, die genau wissen, was sie tun.</p>
+      </>
+    ),
+  },
+  detail: {
+    eyebrow: 'Das Detail',
+    inhalt: (
+      <>
+        <h2 className={title}>
+          Jeder Nagel ein <em>kleines Kunstwerk</em>
+        </h2>
+        <p className={body}>Gel, Tips, Chrome und Nail Art, präzise geformt und lange haltbar.</p>
+      </>
+    ),
+  },
+  look: {
+    eyebrow: 'Dein Look',
+    inhalt: (
+      <>
+        <h2 className={title}>
+          Gemacht, um <em>aufzufallen</em>
+        </h2>
+        <p className={body}>Knotless Braids, Nails und Extensions: dein Look, ganz für dich gemacht.</p>
+      </>
+    ),
+  },
+};
+
+const botones = (
+  <div className="mt-8 flex flex-wrap justify-center gap-3">
+    <a href="#termin" className="btn btn-rose">
+      Termin anfragen
+    </a>
+    <a href="#leistungen" className="btn btn-glas">
+      Leistungen ansehen
+    </a>
+  </div>
+);
+
+export default function PortalWorld({ version = 'a' }: { version?: 'a' | 'b' }) {
+  const { escenas } = recorridos[version];
   return (
-    <section data-world aria-label="Eine Reise ins Studio" className="relative">
+    <section data-world data-recorrido={version} aria-label="Eine Reise ins Studio" className="relative">
       <div data-stage className="sticky top-0 h-lvh overflow-hidden bg-kakao">
         {/* Primera escena como imagen normal: se ve al instante mientras el canvas carga las demás. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -32,45 +93,17 @@ export default function PortalWorld() {
           <span className="hint-line block h-10 w-px bg-creme/50" />
         </div>
 
-        <NagelLeiste />
+        <NagelLeiste escenas={escenas} />
       </div>
 
       <div className="relative z-10 -mt-[100lvh]">
-        <Stop index={0} eyebrow="Braids · Nails · Extensions">
-          <h1 className={title}>
-            Schönheit bis in die <em>Fingerspitzen</em>
-          </h1>
-          <p className={body}>Willkommen bei Braidz&apos;n Tips in Liechtenstein. Scroll dich hinein.</p>
-        </Stop>
-
-        <Stop index={1} eyebrow="Das Studio">
-          <h2 className={title}>
-            Ein Ort zum <em>Durchatmen</em>
-          </h2>
-          <p className={body}>Lehn dich zurück: Kaffee, gute Musik und Hände, die genau wissen, was sie tun.</p>
-        </Stop>
-
-        <Stop index={2} eyebrow="Das Detail">
-          <h2 className={title}>
-            Jeder Nagel ein <em>kleines Kunstwerk</em>
-          </h2>
-          <p className={body}>Gel, Tips, Chrome und Nail Art, präzise geformt und lange haltbar.</p>
-        </Stop>
-
-        <Stop index={3} eyebrow="Dein Look">
-          <h2 className={title}>
-            Gemacht, um <em>aufzufallen</em>
-          </h2>
-          <p className={body}>Knotless Braids, Nails und Extensions: dein Look, ganz für dich gemacht.</p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <a href="#termin" className="btn btn-rose">
-              Termin anfragen
-            </a>
-            <a href="#leistungen" className="btn btn-glas">
-              Leistungen ansehen
-            </a>
-          </div>
-        </Stop>
+        {escenas.map((e, i) => (
+          <Stop key={e.id} escena={e} eyebrow={textos[e.id].eyebrow}>
+            {textos[e.id].inhalt}
+            {/* La última parada lleva los botones. */}
+            {i === escenas.length - 1 && botones}
+          </Stop>
+        ))}
       </div>
     </section>
   );

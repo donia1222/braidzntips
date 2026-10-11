@@ -6,7 +6,7 @@ import Fuss from '../components/Fuss';
 
 // Cada parte con su propio efecto: recorrido por aberturas (espejito, ventana, uña) · abanico de tarjetas ·
 // probador de esmaltes · trenza que se trenza con el scroll · brillo de esmalte sobre el nombre.
-export default function Home() {
+export function Seite({ version = 'a' }: { version?: 'a' | 'b' }) {
   return (
     <>
       <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex items-center justify-between px-4 pt-4 md:px-8 md:pt-6">
@@ -19,7 +19,7 @@ export default function Home() {
         </a>
       </header>
       <main>
-        <PortalWorld />
+        <PortalWorld version={version} />
         <Leistungen />
         <Farbstudio />
         <Termin />
@@ -27,4 +27,8 @@ export default function Home() {
       <Fuss />
     </>
   );
+}
+
+export default function Home() {
+  return <Seite />;
 }

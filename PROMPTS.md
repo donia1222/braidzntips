@@ -103,3 +103,32 @@ Revisa que se vean **las cinco uñas enteras, sin tapar ninguna**, y que sean bl
 ## Cuando las tengas
 
 Ponlas en su carpeta con el nombre exacto y avísame. Yo mido el centro de cada portal (espejito, ventana y uña), las convierto a WebP y monto el recorrido. Mientras faltan, la web usa imágenes provisionales con el portal marcado.
+
+---
+
+## SERIE 4 · FARBSTUDIO CON DISEÑOS (carpeta `imagenes/body/`, cuadrado 1:1)
+
+Cuatro manicuras decoradas sobre **la misma mano**. Cada una por separado: en una conversación nueva, **adjunta `hand.png`** (la de las uñas blancas) y pega el prompt. Así la mano y la posición no cambian; yo solo tomo las uñas de cada imagen y las coloco sobre la misma foto.
+
+Si la mano sale movida, girada o con otra pose, pide:
+`Keep the hand, pose, bracelet, background and framing exactly identical to the attached image. Only repaint the nails.`
+
+### `design-1.png`, French de oro con perlas
+```
+Edit the attached image. Keep the hand, the pose, the fingers, the bracelet, the background, the light and the framing exactly identical, pixel for pixel. Only repaint the five nails: milky soft-pink base with a fine gold chrome French tip, and on the ring finger and the thumb three tiny pearls and a small gold accent near the cuticle. Glossy, professional salon quality. Same square 1:1 format.
+```
+
+### `design-2.png`, cromo efecto aurora
+```
+Edit the attached image. Keep the hand, the pose, the fingers, the bracelet, the background, the light and the framing exactly identical, pixel for pixel. Only repaint the five nails: glazed pearl chrome with a soft pink-lilac aurora shimmer, and on the middle finger a delicate 3D gold line art swirl. Mirror-glossy, professional salon quality. Same square 1:1 format.
+```
+
+### `design-3.png`, rojo cereza con detalles dorados
+```
+Edit the attached image. Keep the hand, the pose, the fingers, the bracelet, the background, the light and the framing exactly identical, pixel for pixel. Only repaint the five nails: deep glossy cherry red, with the ring finger in red cat-eye velvet effect and fine gold foil flakes, and a thin gold line along the cuticle of the index finger. Elegant, professional salon quality. Same square 1:1 format.
+```
+
+### `design-4.png`, nude con flores y brillo
+```
+Edit the attached image. Keep the hand, the pose, the fingers, the bracelet, the background, the light and the framing exactly identical, pixel for pixel. Only repaint the five nails: soft nude-beige base, two nails with tiny hand-painted white and blush flowers with gold centers, one nail with a fine champagne glitter gradient from the tip, and the thumb in plain glossy nude. Delicate, trendy, professional salon quality. Same square 1:1 format.
+```

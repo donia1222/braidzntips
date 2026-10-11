@@ -1,10 +1,10 @@
 import type { CSSProperties } from 'react';
-import { escenas } from '../data/escenas';
+import type { Escena } from '../data/escenas';
 
 export const MANDEL = 'M12 1C15 2 22 10 22 22C22 31 18 37 12 37C6 37 2 31 2 22C2 10 9 2 12 1Z';
 
 // Indicador de progreso: una uña por escena. Se esmaltan una a una con el scroll (la variable --f la pone portal.ts).
-export default function NagelLeiste() {
+export default function NagelLeiste({ escenas }: { escenas: Escena[] }) {
   return (
     <div className="pointer-events-none absolute right-5 bottom-6 flex items-end gap-4 md:right-8 md:bottom-8">
       <p data-nagel-label className="hidden pb-1 text-xs font-medium tracking-[0.2em] text-creme/75 uppercase md:block">

@@ -1,6 +1,6 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { escenas, tramos, type Tramo } from '../data/escenas';
+import { recorridos, type Tramo } from '../data/escenas';
 
 // Recorrido por portales. Cada tramo lleva de una escena a la siguiente: la cámara se acerca a la abertura de la
 // escena actual (el espejito, la ventana en arco, la uña) y la escena siguiente, que ya se ve dentro, crece hasta
@@ -50,7 +50,13 @@ async function cargar(src: string): Promise<Fuente> {
 }
 
 // Traza la abertura centrada en (cx, cy) con ancho w y alto h, en píxeles.
-function trazar(c: CanvasRenderingContext2D, forma: Tramo['forma'], cx: number, cy: number, w: number, h: number) {
+function trazar(c: CanvasRenderingContext2D, forma: Tramo['forma'], gx: number, gy: number, w: number, h: number, giro = 0) {
+  // Se traza centrada en el origen y girada; el contexto vuelve a su sitio al final.
+  c.save();
+  c.translate(gx, gy);
+  c.rotate(giro);
+  const cx = 0;
+  const cy = 0;
   c.beginPath();
   if (forma === 'kreis') {
     c.ellipse(cx, cy, w / 2, h / 2, 0, 0, Math.PI * 2);
@@ -74,9 +80,11 @@ function trazar(c: CanvasRenderingContext2D, forma: Tramo['forma'], cx: number, 
     c.bezierCurveTo(cx - w / 2, cy - h * 0.2, cx - w * 0.22, t + h * 0.05, cx, t);
     c.closePath();
   }
+  c.restore();
 }
 
 export function initPortal(world: HTMLElement, reduceMotion: boolean) {
+  const { escenas, tramos } = recorridos[world.dataset.recorrido === 'b' ? 'b' : 'a'];
   const stage = world.querySelector<HTMLElement>('[data-stage]');
   const canvas = stage?.querySelector<HTMLCanvasElement>('[data-portal]');
   const ctx = canvas?.getContext('2d', { alpha: false });
@@ -92,6 +100,8 @@ export function initPortal(world: HTMLElement, reduceMotion: boolean) {
   // Hay que volver a pintar (en movimiento reducido solo se pinta cuando cambia algo).
   let sucio = true;
   const fuentes: (Fuente | null)[] = escenas.map(() => null);
+  // Versiones desenfocadas de la escena siguiente, por tramo (si las hay).
+  const unscharf: (Fuente | null)[] = tramos.map(() => null);
   (async () => {
     for (let i = 0; i < escenas.length; i++) {
       try {
@@ -108,6 +118,14 @@ export function initPortal(world: HTMLElement, reduceMotion: boolean) {
         }
       }
       sucio = true;
+      const u = tramos[i]?.unscharf;
+      if (u) {
+        try {
+          unscharf[i] = await cargar(u);
+        } catch {
+          unscharf[i] = null;
+        }
+      }
     }
   })();
 
@@ -160,8 +178,10 @@ export function initPortal(world: HTMLElement, reduceMotion: boolean) {
   new ResizeObserver(medir).observe(stage);
 
   // Dibuja solo la parte visible de una escena colocada en (x0, y0) con tamaño (w, h) en píxeles CSS.
+  // Con la escena girada se ve más allá de las esquinas: el margen de lo que se dibuja crece con el giro.
+  let giroActual = 0;
   const dibujar = (img: Fuente, x0: number, y0: number, w: number, h: number) => {
-    const margen = 0.06;
+    const margen = 0.06 + Math.abs(giroActual) * 0.8;
     const ax = Math.max(x0, -W * margen);
     const ay = Math.max(y0, -H * margen);
     const bx = Math.min(x0 + w, W * (1 + margen));
@@ -207,7 +227,7 @@ export function initPortal(world: HTMLElement, reduceMotion: boolean) {
     const oy = (H - boxH) / 2;
     let ox = (W - boxW) / 2;
 
-    const { portal: p, llegada: q, zoom: K, forma, w: fw, h: fh, fundido = [0.12, 0.4] } = tramos[tramo];
+    const { portal: p, llegada: q, zoom: K, forma, w: fw, h: fh, giro = 0, giroLlegada = 0, fundido = [0.12, 0.4] } = tramos[tramo];
     const a = fuentes[tramo];
     const b = fuentes[tramo + 1];
 
@@ -251,7 +271,7 @@ export function initPortal(world: HTMLElement, reduceMotion: boolean) {
     const alphaB = smooth(range(t, fundido[0], fundido[1]));
     // Al empezar, la escena siguiente se ve algo más grande de lo que le toca para que llene la abertura sin dejar
     // bordes vacíos; llega a su tamaño exacto al final del tramo.
-    const llena = 1.06 * Math.max(1, (fh * K) / (2 * Math.min(q.y, 1 - q.y)), (fw * K) / (2 * Math.min(q.x, 1 - q.x)));
+    const llena = (1.06 + Math.abs(giroLlegada) * 0.5) * Math.max(1, (fh * K) / (2 * Math.min(q.y, 1 - q.y)), (fw * K) / (2 * Math.min(q.x, 1 - q.x)));
     const ki = (k / K) * (1 + (llena - 1) * (1 - smooth(range(t, 0.2, 1))));
     const plano = { tx: cx - ki * q.x, ty: cy - ki * q.y, k: ki, alpha: alphaB };
     const gx = ox + cx * boxW;
@@ -267,15 +287,27 @@ export function initPortal(world: HTMLElement, reduceMotion: boolean) {
       const cubre = (2.4 * Math.hypot(W, H)) / Math.min(K * fw * boxW, K * fh * boxH);
       const s = 1 + (cubre - 1) * abre * abre;
       ctx.save();
-      trazar(ctx, forma, gx, gy, pw * s, ph * s);
+      trazar(ctx, forma, gx, gy, pw * s, ph * s, giro);
       ctx.clip();
+      // La escena de dentro puede llegar girada (alineada con la uña) y se endereza durante el tramo.
+      const gira = giroLlegada * (1 - smooth(range(t, 0.15, 0.9)));
+      giroActual = gira;
+      if (gira) {
+        ctx.translate(gx, gy);
+        ctx.rotate(gira);
+        ctx.translate(-gx, -gy);
+      }
       pintar(b, plano);
+      // Primero desenfocada, como un reflejo; se enfoca al acercarse.
+      const borroso = unscharf[tramo];
+      if (borroso) pintar(borroso, { ...plano, alpha: 1 - smooth(range(t, 0.1, 0.6)) });
+      giroActual = 0;
       ctx.restore();
       // Borde de luz champán, que se apaga al abrirse.
       const brillo = alphaB * (1 - range(t, 0.55, 0.85));
       if (brillo > 0.01) {
         ctx.save();
-        trazar(ctx, forma, gx, gy, pw * s, ph * s);
+        trazar(ctx, forma, gx, gy, pw * s, ph * s, giro);
         ctx.strokeStyle = `rgba(255, 228, 200, ${0.85 * brillo})`;
         ctx.lineWidth = 1.5;
         ctx.shadowColor = `rgba(240, 190, 140, ${brillo})`;
