@@ -59,7 +59,7 @@ export default function Farbstudio() {
                 key={f.id}
                 data-lack={i}
                 aria-hidden="true"
-                className={`lack-lage absolute inset-0 ${i === 0 ? 'gemalt sofort' : ''} ${f.id === 'chrome' ? 'chrome' : ''}`}
+                className={`lack-lage absolute inset-0 ${i === 0 ? 'gemalt sofort' : ''}`}
                 style={{ background: f.lack, zIndex: i === 0 ? 1 : 0 } as CSSProperties}
               />
             ))}

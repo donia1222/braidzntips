@@ -14,7 +14,7 @@ export const farben = [
     id: 'chrome',
     name: 'Champagne Chrome',
     text: 'Spiegelglanz wie flüssiges Gold.',
-    lack: 'linear-gradient(115deg, #a87a44 0%, #f7dfb4 22%, #c18c55 40%, #fff1d6 58%, #b98450 76%, #f3d6a6 100%)',
+    lack: '#e2b38a',
     fondo: '#f3e7d5',
   },
   { id: 'cocoa', name: 'Cocoa Brown', text: 'Warm, erdig und elegant, das ganze Jahr.', lack: '#6a4232', fondo: '#ece0d8' },

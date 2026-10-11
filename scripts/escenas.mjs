@@ -196,13 +196,20 @@ if (existsSync('imagenes/body/hand.png')) {
   const dentro = filtro(nitida, 5, Math.min);
   const maske = Buffer.alloc(N * N * 4, 255);
   const glanz = Buffer.alloc(N * N * 4, 255);
+  // El filo de la uña blanca es oscuro y queda justo fuera de la forma: bajo un esmalte claro se vería como un
+  // contorno. La máscara se ensancha 2 px y, debajo, ese filo (no la piel) se aclara hasta el blanco de la uña.
+  const ancha = filtro(nitida, 2, Math.max);
   for (let j = 0; j < N * N; j++) {
-    maske[j * 4 + 3] = Math.round(nitida[j] * 255);
+    const i = j * info.channels;
+    const esPiel = data[i] - data[i + 1] > 55;
+    if (ancha[j] > 0 && !esPiel)
+      for (let c = 0; c < 3; c++) data[i + c] = Math.round(data[i + c] + (Math.max(data[i + c], 228) - data[i + c]) * ancha[j]);
+    maske[j * 4 + 3] = Math.round(ancha[j] * 255);
     glanz[j * 4 + 3] = Math.round(dentro[j] * luz[j] * 235);
   }
   await mkdir(`${OUT}/farbstudio`, { recursive: true });
   await sharp(data, { raw: { width: N, height: N, channels: info.channels } }).webp({ quality: 88 }).toFile(`${OUT}/farbstudio/hand.webp`);
   // Un pelo de desenfoque: borde suave, sin escalones.
-  await sharp(maske, { raw: { width: N, height: N, channels: 4 } }).blur(0.8).png().toFile(`${OUT}/farbstudio/maske.png`);
+  await sharp(maske, { raw: { width: N, height: N, channels: 4 } }).blur(1).png().toFile(`${OUT}/farbstudio/maske.png`);
   await sharp(glanz, { raw: { width: N, height: N, channels: 4 } }).blur(0.6).png().toFile(`${OUT}/farbstudio/glanz.png`);
 }

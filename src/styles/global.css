@@ -235,17 +235,6 @@
   transition: none;
 }
 
-/* El cromo se mueve un poco: parece metal que refleja la luz. */
-.lack-lage.chrome {
-  background-size: 220% 220% !important;
-  animation: chrome 5s ease-in-out infinite alternate;
-}
-
-@keyframes chrome {
-  from { background-position: 0% 30%; }
-  to { background-position: 100% 70%; }
-}
-
 .glanz-lauf {
   background: linear-gradient(110deg, transparent 35%, rgb(255 255 255 / 0.55) 47%, rgb(255 255 255 / 0.85) 50%, rgb(255 255 255 / 0.55) 53%, transparent 65%);
   background-size: 300% 100%;
@@ -352,7 +341,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .glanz-lauf,
-  .lack-lage.chrome,
   .hint-line,
   .js .wortmarke.is-in {
     animation: none;
