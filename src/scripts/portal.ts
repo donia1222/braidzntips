@@ -272,7 +272,10 @@ export function initPortal(world: HTMLElement, reduceMotion: boolean) {
     // Al empezar, la escena siguiente se ve algo más grande de lo que le toca para que llene la abertura sin dejar
     // bordes vacíos; llega a su tamaño exacto al final del tramo.
     const llena = (1.06 + Math.abs(giroLlegada) * 0.5) * Math.max(1, (fh * K) / (2 * Math.min(q.y, 1 - q.y)), (fw * K) / (2 * Math.min(q.x, 1 - q.x)));
-    const ki = (k / K) * (1 + (llena - 1) * (1 - smooth(range(t, 0.2, 1))));
+    // Si llega girada, mientras gira crece lo justo para que sus bordes no asomen por las esquinas de la pantalla.
+    const gira = giroLlegada * (1 - smooth(range(t, 0.15, 0.9)));
+    const esquinas = Math.max(1, Math.abs(Math.cos(gira)) + Math.abs(Math.sin(gira)) * RATIO);
+    const ki = (k / K) * (1 + (llena - 1) * (1 - smooth(range(t, 0.2, 1)))) * esquinas;
     const plano = { tx: cx - ki * q.x, ty: cy - ki * q.y, k: ki, alpha: alphaB };
     const gx = ox + cx * boxW;
     const gy = oy + cy * boxH;
@@ -290,7 +293,6 @@ export function initPortal(world: HTMLElement, reduceMotion: boolean) {
       trazar(ctx, forma, gx, gy, pw * s, ph * s, giro);
       ctx.clip();
       // La escena de dentro puede llegar girada (alineada con la uña) y se endereza durante el tramo.
-      const gira = giroLlegada * (1 - smooth(range(t, 0.15, 0.9)));
       giroActual = gira;
       if (gira) {
         ctx.translate(gx, gy);

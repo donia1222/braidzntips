@@ -1,5 +1,5 @@
 // Los recorridos del hero. Imágenes generadas con ChatGPT (originales en imagenes/hero, ver PROMPTS.md), preparadas
-// con scripts/escenas.mjs. Hay dos versiones para comparar: "a" (la de la página principal) y "b" (en /v2).
+// con scripts/escenas.mjs. La web usa "b"; "a" es la versión anterior, guardada por si se quiere volver.
 //
 // Coordenadas en fracciones de la imagen 16:9: `x` del ancho, `y` del alto. `portal` es la abertura por la que se
 // entra a la escena siguiente; `llegada` es el punto de la escena siguiente que queda dentro de ese portal, y `zoom`
@@ -75,12 +75,12 @@ export const recorridos: Record<'a' | 'b', Recorrido> = {
       { portal: { x: 0.4961, y: 0.405 }, llegada: { x: 0.49, y: 0.56 }, zoom: 3.2, forma: 'mandel', w: 0.159, h: 0.66 },
     ],
   },
-  // Espejito con la chica reflejada → la chica → su uña, boca abajo → el estudio.
+  // Espejito con la chica reflejada → la chica → su uña, que gira hasta quedar hacia arriba → el estudio.
   b: {
     escenas: [
       spiegel,
       look('look'),
-      { id: 'detail', src: '/escenas/hero/3-nagel-kopf.webp', alt: 'Makroaufnahme eines langen Mandelnagels in Perlmutt-Chrome', lugar: 'Das Detail' },
+      { id: 'detail', src: '/escenas/hero/3-nagel.webp', alt: 'Makroaufnahme eines langen Mandelnagels in Perlmutt-Chrome', lugar: 'Das Detail' },
       studio('studio', 'Das Studio'),
     ],
     tramos: [
@@ -95,20 +95,20 @@ export const recorridos: Record<'a' | 'b', Recorrido> = {
         unscharf: '/escenas/hero/4-glanz-unscharf.webp',
         fundido: [0, 0.02],
       },
-      // Por la uña del dedo corazón, que apunta hacia abajo y a la derecha (unos 38°): dentro, la uña macro girada
-      // igual, que se endereza mientras la cámara entra.
+      // Por la uña del dedo corazón, que apunta hacia abajo y a la derecha: dentro aparece la uña macro girada igual y,
+      // mientras la cámara entra, da la vuelta hasta quedar con la punta hacia arriba.
       {
         portal: { x: 0.5612, y: 0.6206 },
-        llegada: { x: 0.5039, y: 0.595 },
+        llegada: { x: 0.4961, y: 0.405 },
         zoom: 11,
         forma: 'mandel',
         w: 0.0165,
         h: 0.072,
         giro: 2.482,
-        giroLlegada: -0.66,
+        giroLlegada: 2.482,
       },
-      // Por la uña macro (boca abajo) al estudio.
-      { portal: { x: 0.5039, y: 0.595 }, llegada: { x: 0.5, y: 0.42 }, zoom: 3.2, forma: 'mandel', w: 0.159, h: 0.66, giro: Math.PI },
+      // Por la uña macro al estudio.
+      { portal: { x: 0.4961, y: 0.405 }, llegada: { x: 0.5, y: 0.42 }, zoom: 3.2, forma: 'mandel', w: 0.159, h: 0.66 },
     ],
   },
 };

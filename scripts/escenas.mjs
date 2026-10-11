@@ -64,9 +64,7 @@ for (const [nombre, [[W, H], forma]] of Object.entries(imagenes)) {
   }
 }
 
-// Versión 2 del hero: la uña macro boca abajo (los dedos de la chica apuntan hacia abajo) y la chica desenfocada,
-// para verla como un reflejo dentro del espejito.
-await sharp(`${OUT}/hero/3-nagel.webp`).rotate(180).webp({ quality: 84 }).toFile(`${OUT}/hero/3-nagel-kopf.webp`);
+// La chica desenfocada, para verla como un reflejo dentro del espejito.
 await sharp(`${OUT}/hero/4-glanz.webp`).blur(14).webp({ quality: 80 }).toFile(`${OUT}/hero/4-glanz-unscharf.webp`);
 
 console.log(`escenas: ${reales} de ${Object.keys(imagenes).length} imágenes reales, el resto provisionales`);

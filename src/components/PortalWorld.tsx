@@ -65,7 +65,7 @@ const botones = (
   </div>
 );
 
-export default function PortalWorld({ version = 'a' }: { version?: 'a' | 'b' }) {
+export default function PortalWorld({ version = 'b' }: { version?: 'a' | 'b' }) {
   const { escenas } = recorridos[version];
   return (
     <section data-world data-recorrido={version} aria-label="Eine Reise ins Studio" className="relative">
