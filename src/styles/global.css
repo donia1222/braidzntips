@@ -1,0 +1,366 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-display: var(--font-bodoni), serif;
+  --font-sans: var(--font-manrope), sans-serif;
+}
+
+@theme {
+  --color-kakao: #24150f;
+  --color-mokka: #8a5a48;
+  --color-creme: #f8efe8;
+  --color-blush: #f2ddd6;
+  --color-rose: #e7a9a0;
+  --color-gold: #d8b27c;
+  --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@layer base {
+  /* Móvil: la página no se puede arrastrar a los lados; el zoom con dos dedos sigue permitido. */
+  html,
+  body {
+    overflow-x: clip;
+    overscroll-behavior-x: none;
+    touch-action: pan-y pinch-zoom;
+  }
+
+  html {
+    background-color: var(--color-kakao);
+    color: var(--color-creme);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-kakao);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* El acento de los titulares: Bodoni en cursiva y rosa. */
+  em {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--color-rose);
+  }
+
+  .bg-creme em,
+  [data-farbstudio] em {
+    color: var(--color-mokka);
+  }
+
+  ::selection {
+    background-color: var(--color-rose);
+    color: var(--color-kakao);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-rose);
+    outline-offset: 4px;
+  }
+}
+
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    border-radius: 9999px;
+    padding: 10px 22px;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition:
+      background-color 600ms var(--ease-fluid),
+      color 600ms var(--ease-fluid),
+      transform 600ms var(--ease-fluid);
+  }
+
+  .btn:active {
+    transform: scale(0.97);
+  }
+
+  .btn-rose {
+    background-color: var(--color-rose);
+    color: var(--color-kakao);
+    box-shadow: 0 10px 30px -12px rgb(231 169 160 / 0.8);
+  }
+
+  .btn-rose:hover {
+    background-color: var(--color-creme);
+  }
+
+  .btn-glas {
+    background-color: rgb(36 21 15 / 0.55);
+    box-shadow: inset 0 0 0 1px rgb(248 239 232 / 0.3);
+    color: var(--color-creme);
+  }
+
+  .btn-glas:hover {
+    background-color: var(--color-creme);
+    color: var(--color-kakao);
+  }
+
+  /* Nombre de la cabecera: una píldora oscura que se lee sobre el hero y sobre las secciones claras. */
+  .kopf-pille {
+    border-radius: 9999px;
+    padding: 12px 18px 10px;
+    background-color: rgb(36 21 15 / 0.72);
+    box-shadow: inset 0 0 0 1px rgb(248 239 232 / 0.14);
+    color: var(--color-creme);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .kopf-pille,
+    .btn-glas {
+      backdrop-filter: blur(14px);
+    }
+  }
+
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(2.5rem);
+    transition:
+      opacity 1000ms var(--ease-fluid),
+      transform 1000ms var(--ease-fluid);
+    transition-delay: var(--d, 0ms);
+  }
+
+  .js [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Texto de cada parada del hero: aparece y se enfoca cuando la parada es la actual. */
+.js .stop-body > * {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition:
+    opacity 700ms var(--ease-fluid),
+    transform 700ms var(--ease-fluid),
+    filter 700ms var(--ease-fluid);
+}
+
+.js .stop.is-current .stop-body > *,
+.js .stop-body:focus-within > * {
+  opacity: 1;
+  transform: none;
+  transition-duration: 1200ms;
+}
+
+.stop.is-current .stop-body > :nth-child(2) { transition-delay: 80ms; }
+.stop.is-current .stop-body > :nth-child(3) { transition-delay: 160ms; }
+.stop.is-current .stop-body > :nth-child(4) { transition-delay: 240ms; }
+
+.js .stop:not(.is-current) .stop-body:not(:focus-within) {
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .js .stop-body > * {
+    filter: blur(8px);
+  }
+
+  .js .stop.is-current .stop-body > * {
+    filter: none;
+  }
+}
+
+.hint-line {
+  transform-origin: top;
+  animation: hint 2200ms var(--ease-fluid) infinite;
+}
+
+@keyframes hint {
+  0% { transform: scaleY(0); opacity: 1; }
+  60% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+
+/* Uñas del indicador: el esmalte sube desde la base según --f. */
+.nagel-lack {
+  fill: var(--color-rose);
+  transform-box: fill-box;
+  transform-origin: bottom;
+  transform: scaleY(var(--f, 0));
+}
+
+/* Probador de esmaltes: cada tono es una capa que se multiplica sobre las uñas blancas de la foto, recortada por la
+   máscara de las uñas y por un degradado que sube (--p) para que el esmalte se pinte de la base a la punta. */
+@property --p {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 20%;
+}
+
+[data-farbstudio] {
+  transition: background-color 900ms var(--ease-fluid);
+}
+
+.hand-rahmen {
+  box-shadow: 0 40px 80px -40px rgb(36 21 15 / 0.45);
+}
+
+.lack-lage {
+  /* Las uñas ocupan la mitad de arriba de la foto: la pincelada empieza en su base (20 % desde abajo). */
+  --p: 20%;
+  -webkit-mask-image: url('/escenas/farbstudio/maske.png'), linear-gradient(to top, #000 var(--p), transparent calc(var(--p) + 14%));
+  mask-image: url('/escenas/farbstudio/maske.png'), linear-gradient(to top, #000 var(--p), transparent calc(var(--p) + 14%));
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+.lack-lage.gemalt {
+  --p: 120%;
+  transition: --p 1000ms cubic-bezier(0.45, 0.1, 0.25, 1);
+}
+
+.lack-lage.sofort {
+  transition: none;
+}
+
+/* El cromo se mueve un poco: parece metal que refleja la luz. */
+.lack-lage.chrome {
+  background-size: 220% 220% !important;
+  animation: chrome 5s ease-in-out infinite alternate;
+}
+
+@keyframes chrome {
+  from { background-position: 0% 30%; }
+  to { background-position: 100% 70%; }
+}
+
+.glanz-lauf {
+  background: linear-gradient(110deg, transparent 35%, rgb(255 255 255 / 0.55) 47%, rgb(255 255 255 / 0.85) 50%, rgb(255 255 255 / 0.55) 53%, transparent 65%);
+  background-size: 300% 100%;
+  background-repeat: no-repeat;
+  -webkit-mask-image: url('/escenas/farbstudio/maske.png');
+  mask-image: url('/escenas/farbstudio/maske.png');
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  mix-blend-mode: soft-light;
+  animation: glanzlauf 5.5s 1s var(--ease-fluid) infinite;
+}
+
+@keyframes glanzlauf {
+  0% { background-position: 100% 0; }
+  40%, 100% { background-position: 0% 0; }
+}
+
+.farbe-name {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 600ms var(--ease-fluid),
+    transform 600ms var(--ease-fluid);
+}
+
+.farbe-name[data-aktiv] {
+  opacity: 1;
+  transform: none;
+  transition-delay: 150ms;
+}
+
+.muster {
+  display: block;
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  box-shadow:
+    inset 0 0 0 1px rgb(36 21 15 / 0.15),
+    0 0 0 0 transparent;
+  transition:
+    transform 500ms var(--ease-fluid),
+    box-shadow 500ms var(--ease-fluid);
+}
+
+.muster:hover {
+  transform: translateY(-3px);
+}
+
+.muster[aria-pressed='true'] {
+  transform: scale(1.12);
+  box-shadow:
+    inset 0 0 0 1px rgb(36 21 15 / 0.15),
+    0 0 0 3px var(--color-creme),
+    0 0 0 4.5px var(--color-kakao);
+}
+
+/* Pasos del Termin: apagados hasta que la trenza llega. */
+.schritt {
+  opacity: 0.3;
+  transform: translateX(-10px);
+  transition:
+    opacity 700ms var(--ease-fluid),
+    transform 700ms var(--ease-fluid);
+}
+
+.schritt.is-on {
+  opacity: 1;
+  transform: none;
+}
+
+/* Nombre del pie: sube desde una máscara y un brillo de esmalte lo recorre cada pocos segundos. */
+.wortmarke {
+  padding-bottom: 0.08em;
+  background-image: linear-gradient(105deg, var(--color-creme) 0%, var(--color-creme) 40%, #fff6e6 47%, var(--color-gold) 50%, #fff6e6 53%, var(--color-creme) 60%, var(--color-creme) 100%);
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.wortmarke em {
+  color: transparent;
+}
+
+.js .wortmarke {
+  clip-path: inset(0 0 100% 0);
+  transform: translateY(30%);
+  transition:
+    clip-path 1400ms var(--ease-fluid),
+    transform 1400ms var(--ease-fluid);
+}
+
+.js .wortmarke.is-in {
+  clip-path: inset(0 0 -10% 0);
+  transform: none;
+  animation: lackglanz 6s 900ms var(--ease-fluid) infinite;
+}
+
+@keyframes lackglanz {
+  0% { background-position: 100% 0; }
+  40%, 100% { background-position: 0% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glanz-lauf,
+  .lack-lage.chrome,
+  .hint-line,
+  .js .wortmarke.is-in {
+    animation: none;
+  }
+
+  .js [data-reveal],
+  .js .stop-body > *,
+  .js .wortmarke {
+    transform: none;
+  }
+}
