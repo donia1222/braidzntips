@@ -64,8 +64,42 @@ for (const [nombre, [[W, H], forma]] of Object.entries(imagenes)) {
   }
 }
 
-// La chica desenfocada, para verla como un reflejo dentro del espejito.
-await sharp(`${OUT}/hero/4-glanz.webp`).blur(14).webp({ quality: 80 }).toFile(`${OUT}/hero/4-glanz-unscharf.webp`);
+// La chica desenfocada y con un velo blanco cálido, como el vaho de un espejo: se ve detrás, pero suave.
+{
+  const [W, H] = HERO;
+  const velo = await sharp({ create: { width: W, height: H, channels: 4, background: { r: 255, g: 246, b: 240, alpha: 0.42 } } }).png().toBuffer();
+  const borrosa = await sharp(`${OUT}/hero/4-glanz.webp`).blur(24).toBuffer();
+  await sharp(borrosa).composite([{ input: velo }]).webp({ quality: 80 }).toFile(`${OUT}/hero/4-glanz-unscharf.webp`);
+}
+
+// El reflejo ya va pintado en el cristal del espejito (hero 1), exactamente donde lo pinta el recorrido al empezar:
+// así se ve al cargar la página, antes que nada más. Mismos valores que el primer tramo de src/data/escenas.ts
+// (portal, tamaño del cristal, llegada y zoom); `llena` es el aumento con el que el recorrido rellena el cristal.
+{
+  const p = { x: 0.4939, y: 0.3093 };
+  const q = { x: 0.56, y: 0.45 };
+  const K = 5;
+  const fw = 0.1833;
+  const fh = 0.33;
+  const llena = 1.06 * Math.max(1, (fh * K) / (2 * Math.min(q.y, 1 - q.y)), (fw * K) / (2 * Math.min(q.x, 1 - q.x)));
+  const ki = llena / K;
+  const [W, H] = HERO;
+  const bw = Math.round(ki * W);
+  const bh = Math.round(ki * H);
+  const left = Math.round(p.x * W - q.x * bw);
+  const top = Math.round(p.y * H - q.y * bh);
+  const chica = await sharp(`${OUT}/hero/4-glanz-unscharf.webp`).resize(bw, bh).png().toBuffer();
+  const lienzo = await sharp({ create: { width: W, height: H, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+    .composite([{ input: chica, left, top }])
+    .png()
+    .toBuffer();
+  const cristal = Buffer.from(
+    `<svg width="${W}" height="${H}"><ellipse cx="${p.x * W}" cy="${p.y * H}" rx="${(fw * W) / 2}" ry="${(fh * H) / 2}" fill="#fff"/></svg>`,
+  );
+  const reflejo = await sharp(lienzo).composite([{ input: cristal, blend: 'dest-in' }]).png().toBuffer();
+  const espejo = await sharp(`${OUT}/hero/1-spiegel.webp`).composite([{ input: reflejo }]).toBuffer();
+  await sharp(espejo).webp({ quality: 84 }).toFile(`${OUT}/hero/1-spiegel.webp`);
+}
 
 console.log(`escenas: ${reales} de ${Object.keys(imagenes).length} imágenes reales, el resto provisionales`);
 

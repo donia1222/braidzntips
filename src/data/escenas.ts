@@ -93,7 +93,8 @@ export const recorridos: Record<'a' | 'b', Recorrido> = {
         w: 0.1833,
         h: 0.33,
         unscharf: '/escenas/hero/4-glanz-unscharf.webp',
-        fundido: [0, 0.02],
+        // Visible desde el principio (también va pintado en la imagen del espejito, ver scripts/escenas.mjs).
+        fundido: [-1, 0],
       },
       // Por la uña del dedo corazón, que apunta hacia abajo y a la derecha: dentro aparece la uña macro girada igual y,
       // mientras la cámara entra, da la vuelta hasta quedar con la punta hacia arriba.
