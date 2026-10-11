@@ -27,7 +27,7 @@ export function initMotion() {
     },
     { rootMargin: '0px 0px -10% 0px' },
   );
-  document.querySelectorAll('[data-reveal], [data-wortmarke]').forEach((el) => reveal.observe(el));
+  document.querySelectorAll('[data-reveal]').forEach((el) => reveal.observe(el));
 
   const world = document.querySelector<HTMLElement>('[data-world]');
   if (world) initPortal(world, reduceMotion);

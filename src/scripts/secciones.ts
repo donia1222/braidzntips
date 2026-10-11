@@ -11,11 +11,41 @@ function leistungen(reduceMotion: boolean) {
   const karten = gsap.utils.toArray<HTMLElement>('[data-karte]', seccion);
   const bilder = karten.map((k) => k.querySelector('[data-karte-bild]'));
   const texte = karten.map((k) => k.querySelector('[data-karte-text]'));
+  const hilo = seccion.querySelector<SVGPathElement>('[data-hilo]');
+  const punkt = seccion.querySelector<HTMLElement>('[data-hilo-punkt]');
+  const vorteile = gsap.utils.toArray<HTMLElement>('[data-vorteil]', seccion);
+  const iconos = gsap.utils.toArray<SVGPathElement>('[data-vorteil-icono]', seccion);
   gsap.set(karten, { xPercent: -50 });
   if (reduceMotion) {
     gsap.set(karten, { xPercent: (i) => [-165, -50, 65][i] });
+    gsap.set([hilo, ...iconos], { strokeDashoffset: 0 });
     return;
   }
+  // Al final: el hilo se dibuja y, a su paso, cada ventaja sube y traza su icono.
+  gsap.set(vorteile, { autoAlpha: 0, y: 26, scale: 0.92 });
+  const cierre = (tl: gsap.core.Timeline, desde: number) =>
+    tl
+      .to(
+        hilo,
+        {
+          strokeDashoffset: 0,
+          duration: 1,
+          ease: 'none',
+          // El punto de luz va en la punta del hilo (en % de su caja, que el SVG estira sin conservar proporción).
+          onUpdate() {
+            if (!hilo || !punkt) return;
+            const p = this.progress();
+            const largo = hilo.getTotalLength();
+            const pt = hilo.getPointAtLength(largo * p);
+            punkt.style.left = `${pt.x / 10}%`;
+            punkt.style.top = `${(pt.y / 60) * 100}%`;
+            punkt.style.opacity = String(p > 0.01 && p < 0.99 ? 1 : 0);
+          },
+        },
+        desde,
+      )
+      .to(vorteile, { autoAlpha: 1, y: 0, scale: 1, duration: 0.35, stagger: 0.2, ease: 'back.out(1.6)' }, desde + 0.1)
+      .to(iconos, { strokeDashoffset: 0, duration: 0.4, stagger: 0.2, ease: 'power1.inOut' }, desde + 0.2);
   const scroll = { trigger: seccion, start: 'top top', end: 'bottom bottom', scrub: 0.6 };
   const mm = gsap.matchMedia();
 
@@ -26,8 +56,9 @@ function leistungen(reduceMotion: boolean) {
     const tl = gsap.timeline({ scrollTrigger: scroll, defaults: { ease: 'power2.inOut' } });
     tl.to(karten, { xPercent: (i) => [-165, -50, 65][i], rotation: 0, scale: 1, duration: 1 })
       .to(bilder, { scale: 1, duration: 1.2 }, 0)
-      .to(texte, { autoAlpha: 1, y: 0, stagger: 0.12, duration: 0.4, ease: 'power2.out' }, 0.75)
-      .to({}, { duration: 0.35 });
+      .to(texte, { autoAlpha: 1, y: 0, stagger: 0.12, duration: 0.4, ease: 'power2.out' }, 0.75);
+    cierre(tl, 1.15);
+    tl.to({}, { duration: 0.3 });
   });
 
   mm.add('(max-width: 767px)', () => {
@@ -40,8 +71,9 @@ function leistungen(reduceMotion: boolean) {
       .to(bilder[1], { scale: 1, duration: 1 }, 0.3)
       .to(karten[2], { y: 0, rotation: 2, duration: 1 }, 1.5)
       .to(karten[1], { scale: 0.95, rotation: 5, yPercent: -2, duration: 1 }, 1.5)
-      .to(bilder[2], { scale: 1, duration: 1 }, 1.5)
-      .to({}, { duration: 0.4 });
+      .to(bilder[2], { scale: 1, duration: 1 }, 1.5);
+    cierre(tl, 2.4);
+    tl.to({}, { duration: 0.3 });
   });
 }
 
@@ -111,10 +143,31 @@ function termin(reduceMotion: boolean) {
   });
 }
 
+// Pie: el esmalte sube dentro del nombre mientras se baja hasta el final de la página.
+function fuss(reduceMotion: boolean) {
+  const svg = document.querySelector<SVGSVGElement>('[data-wortmarke-lack]');
+  const stand = svg?.querySelector<SVGGElement>('[data-lack-stand]');
+  if (!svg || !stand) return;
+  // De 170 (vacío, por debajo de las letras) a -20 (lleno, la onda por encima).
+  const llenar = (p: number) => {
+    stand.style.transform = `translateY(${170 - 190 * p}px)`;
+    svg.classList.toggle('is-voll', p > 0.98);
+  };
+  if (reduceMotion) return llenar(1);
+  ScrollTrigger.create({
+    trigger: svg,
+    start: 'top 95%',
+    end: () => `+=${Math.max(200, document.documentElement.scrollHeight - innerHeight - (svg.getBoundingClientRect().top + scrollY - innerHeight * 0.95))}`,
+    onUpdate: (self) => llenar(self.progress),
+    onRefresh: (self) => llenar(self.progress),
+  });
+}
+
 export function initSecciones(reduceMotion: boolean) {
   leistungen(reduceMotion);
   farbstudio();
   termin(reduceMotion);
+  fuss(reduceMotion);
   // Los pins y alturas ya están: recalcular en orden.
   ScrollTrigger.sort();
   requestAnimationFrame(() => ScrollTrigger.refresh());
