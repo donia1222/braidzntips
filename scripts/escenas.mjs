@@ -213,6 +213,25 @@ if (existsSync('imagenes/body/hand.png')) {
     glanz[j * 4 + 3] = Math.round(dentro[j] * luz[j] * 235);
   }
   await mkdir(`${OUT}/farbstudio`, { recursive: true });
+  // Diseños de uñas (ChatGPT, editando hand.png: la mano está en el mismo sitio). De cada uno se guardan solo las uñas
+  // con un margen suave alrededor: puestos encima de la mano, el cambio no se nota fuera de las uñas.
+  const zona = filtro(ancha, 9, Math.max);
+  for (let d = 1; existsSync(`imagenes/body/design-${d}.png`); d++) {
+    const { data: dd } = await sharp(`imagenes/body/design-${d}.png`).resize(N, N).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+    const rgba = Buffer.alloc(N * N * 4);
+    for (let j = 0; j < N * N; j++) {
+      rgba[j * 4] = dd[j * 3];
+      rgba[j * 4 + 1] = dd[j * 3 + 1];
+      rgba[j * 4 + 2] = dd[j * 3 + 2];
+      rgba[j * 4 + 3] = Math.round(zona[j] * 255);
+    }
+    // Borde de la zona difuminado: se desenfoca la copia y se recupera solo su transparencia.
+    const suave = await sharp(rgba, { raw: { width: N, height: N, channels: 4 } }).blur(3).raw().toBuffer();
+    for (let j = 0; j < N * N; j++) rgba[j * 4 + 3] = suave[j * 4 + 3];
+    await sharp(rgba, { raw: { width: N, height: N, channels: 4 } }).webp({ quality: 88, alphaQuality: 90 }).toFile(`${OUT}/farbstudio/design-${d}.webp`);
+    // Muestra: la uña del dedo corazón.
+    await sharp(`imagenes/body/design-${d}.png`).extract({ left: 560, top: 40, width: 130, height: 130 }).resize(120).webp({ quality: 86 }).toFile(`${OUT}/farbstudio/muster-${d}.webp`);
+  }
   await sharp(data, { raw: { width: N, height: N, channels: info.channels } }).webp({ quality: 88 }).toFile(`${OUT}/farbstudio/hand.webp`);
   // Un pelo de desenfoque: borde suave, sin escalones.
   await sharp(maske, { raw: { width: N, height: N, channels: 4 } }).blur(1).png().toFile(`${OUT}/farbstudio/maske.png`);

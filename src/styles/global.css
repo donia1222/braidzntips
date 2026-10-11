@@ -199,8 +199,8 @@
   transform: scaleY(var(--f, 0));
 }
 
-/* Probador de esmaltes: cada tono es una capa que se multiplica sobre las uñas blancas de la foto, recortada por la
-   máscara de las uñas y por un degradado que sube (--p) para que el esmalte se pinte de la base a la punta. */
+/* Probador de diseños: cada diseño es una capa (solo las uñas, con su transparencia) recortada por un degradado que
+   sube (--p), para que el diseño nuevo se pinte de la base a la punta. */
 @property --p {
   syntax: '<percentage>';
   inherits: false;
@@ -218,12 +218,8 @@
 .lack-lage {
   /* Las uñas ocupan la mitad de arriba de la foto: la pincelada empieza en su base (20 % desde abajo). */
   --p: 20%;
-  -webkit-mask-image: url('/escenas/farbstudio/maske.png'), linear-gradient(to top, #000 var(--p), transparent calc(var(--p) + 14%));
-  mask-image: url('/escenas/farbstudio/maske.png'), linear-gradient(to top, #000 var(--p), transparent calc(var(--p) + 14%));
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-composite: source-in;
-  mask-composite: intersect;
+  -webkit-mask-image: linear-gradient(to top, #000 var(--p), transparent calc(var(--p) + 14%));
+  mask-image: linear-gradient(to top, #000 var(--p), transparent calc(var(--p) + 14%));
 }
 
 .lack-lage.gemalt {

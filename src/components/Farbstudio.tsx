@@ -4,10 +4,16 @@ import { farben } from '../data/farben';
 // Nombre del tono y muestras (se repiten en escritorio y móvil, en sitios distintos del diseño).
 function Muestras({ className = '' }: { className?: string }) {
   return (
-    <ul className={`flex gap-3 ${className}`} aria-label="Farben">
+    <ul className={`flex gap-3 ${className}`} aria-label="Designs">
       {farben.map((f, i) => (
         <li key={f.id}>
-          <button type="button" data-muster={i} aria-label={f.name} className="muster" style={{ background: f.lack }} />
+          <button
+            type="button"
+            data-muster={i}
+            aria-label={f.name}
+            className="muster"
+            style={{ background: `url(/escenas/farbstudio/muster-${i + 1}.webp) center / cover` }}
+          />
         </li>
       ))}
     </ul>
@@ -23,19 +29,19 @@ function Namen({ grande }: { grande: boolean }) {
   ));
 }
 
-// "Farbstudio": un probador de esmaltes sobre una foto real. Las uñas de la foto son blancas; encima, una capa por
-// tono se multiplica sobre ellas (conserva sombras) recortada con la máscara de las uñas, y los brillos originales van
-// por encima. Al cambiar de tono, el esmalte nuevo se pinta de la base a la punta. Lo eligen el scroll o las muestras.
+// "Farbstudio": un probador de diseños de uñas sobre una foto real. Cada diseño es una capa con solo las uñas (y un
+// margen suave) sobre la misma mano; al cambiar, el nuevo se pinta de la base a la punta. Lo eligen el scroll o las
+// muestras.
 export default function Farbstudio() {
   return (
-    <section data-farbstudio aria-labelledby="farben-titel" className="relative h-[420svh] text-kakao" style={{ backgroundColor: farben[0].fondo }}>
+    <section data-farbstudio aria-labelledby="farben-titel" className="relative h-[360svh] text-kakao" style={{ backgroundColor: farben[0].fondo }}>
       <div className="sticky top-0 grid h-svh grid-rows-[auto_1fr_auto] items-center gap-4 overflow-hidden px-6 pt-24 pb-8 md:grid-cols-[1fr_1fr] md:grid-rows-1 md:gap-16 md:px-16 md:pt-0 md:pb-0">
         <div className="text-center md:order-2 md:text-left">
           <p className="text-[11px] font-semibold tracking-[0.32em] text-mokka uppercase">Farbstudio</p>
           <h2 id="farben-titel" className="mt-3 text-4xl leading-[0.95] md:text-6xl">
-            Finde deine <em>Farbe</em>
+            Dein nächstes <em>Nail Design</em>
           </h2>
-          <p className="mt-4 hidden max-w-sm text-base text-kakao/65 md:block">Scroll weiter oder tippe auf eine Farbe: So sieht sie auf echten Nägeln aus.</p>
+          <p className="mt-4 hidden max-w-sm text-base text-kakao/65 md:block">Scroll weiter oder tippe auf ein Design: So sieht es auf echten Nägeln aus.</p>
           <div className="relative mt-8 hidden h-28 md:block">
             <Namen grande />
           </div>
@@ -47,25 +53,26 @@ export default function Farbstudio() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/escenas/farbstudio/hand.webp"
-              alt="Eine Hand mit langen Mandelnägeln, die je nach gewählter Farbe lackiert sind"
+              alt="Eine Hand mit langen Mandelnägeln im gewählten Nail Design"
               loading="lazy"
               decoding="async"
               className="absolute inset-0 size-full object-cover"
             />
-            {/* Las capas se tapan entre ellas con normalidad; solo el conjunto se multiplica sobre la foto. */}
-            <div aria-hidden="true" className="absolute inset-0 mix-blend-multiply">
+            {/* Un diseño por capa: solo las uñas y un margen suave, sobre la misma mano. */}
             {farben.map((f, i) => (
-              <div
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
                 key={f.id}
                 data-lack={i}
+                src={`/escenas/farbstudio/design-${i + 1}.webp`}
+                alt=""
                 aria-hidden="true"
-                className={`lack-lage absolute inset-0 ${i === 0 ? 'gemalt sofort' : ''}`}
-                style={{ background: f.lack, zIndex: i === 0 ? 1 : 0 } as CSSProperties}
+                loading="lazy"
+                decoding="async"
+                className={`lack-lage absolute inset-0 size-full object-cover ${i === 0 ? 'gemalt sofort' : ''}`}
+                style={{ zIndex: i === 0 ? 1 : 0 } as CSSProperties}
               />
             ))}
-            </div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/escenas/farbstudio/glanz.png" alt="" aria-hidden="true" loading="lazy" className="pointer-events-none absolute inset-0 z-10 size-full object-cover" />
             {/* Un destello recorre las uñas de vez en cuando. */}
             <div aria-hidden="true" className="glanz-lauf pointer-events-none absolute inset-0 z-10" />
           </div>
