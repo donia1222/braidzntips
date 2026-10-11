@@ -25,6 +25,15 @@ export function Seite({ version = 'a' }: { version?: 'a' | 'b' }) {
         <Termin />
       </main>
       <Fuss />
+      {/* Temporal, para comparar las dos versiones del hero. */}
+      <nav aria-label="Hero-Versionen" className="fixed bottom-4 left-4 z-50 flex gap-1 rounded-full bg-kakao/80 p-1 text-xs font-semibold text-creme ring-1 ring-creme/15">
+        <a href="/" className={`rounded-full px-3 py-2 ${version === 'a' ? 'bg-rose text-kakao' : ''}`}>
+          Hero 1
+        </a>
+        <a href="/v2/" className={`rounded-full px-3 py-2 ${version === 'b' ? 'bg-rose text-kakao' : ''}`}>
+          Hero 2
+        </a>
+      </nav>
     </>
   );
 }
