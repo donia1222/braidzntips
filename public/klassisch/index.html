@@ -268,6 +268,23 @@
     </figure>
 </div>
 
+<!-- Aviso "en construcción": se abre cada vez que se entra (js/main.js). -->
+<div class="baustelle" data-baustelle role="dialog" aria-modal="true" aria-labelledby="baustelle-titel" aria-describedby="baustelle-text">
+    <div class="baustelle-velo" data-baustelle-zu aria-hidden="true"></div>
+    <div class="baustelle-karte">
+        <button type="button" class="baustelle-x" aria-label="Hinweis schliessen" data-baustelle-zu>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+        <span class="baustelle-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4 2.6-2.6Z"/></svg>
+        </span>
+        <p class="eyebrow">Braidz'n Tips</p>
+        <h2 id="baustelle-titel">Diese Website ist <em>im Aufbau</em></h2>
+        <p id="baustelle-text">Wir arbeiten gerade mit viel Liebe daran. Einige Inhalte, Preise und Kontaktdaten sind noch nicht endgültig. Schau dich trotzdem schon um!</p>
+        <button type="button" class="btn btn-rose baustelle-ok" data-baustelle-zu data-baustelle-ok>Trotzdem ansehen</button>
+    </div>
+</div>
+
 <script src="js/main.js"></script>
 </body>
 </html>

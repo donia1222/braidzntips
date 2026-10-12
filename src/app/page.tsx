@@ -3,6 +3,7 @@ import Leistungen from '../components/Leistungen';
 import Farbstudio from '../components/Farbstudio';
 import Termin from '../components/Termin';
 import Fuss from '../components/Fuss';
+import Baustelle from '../components/Baustelle';
 
 // Cada parte con su propio efecto: recorrido por aberturas (espejito, ventana, uña) · abanico de tarjetas ·
 // probador de esmaltes · trenza que se trenza con el scroll · brillo de esmalte sobre el nombre.
@@ -25,6 +26,7 @@ export function Seite({ version = 'b' }: { version?: 'a' | 'b' }) {
         <Termin />
       </main>
       <Fuss />
+      <Baustelle />
     </>
   );
 }

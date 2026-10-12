@@ -81,8 +81,29 @@ lbZu.addEventListener('click', schliessen);
 lightbox.addEventListener('click', (e) => {
     if (e.target === lightbox) schliessen();
 });
+// Aviso "en construcción": se abre siempre al entrar; mientras está abierto no se desplaza la página.
+const baustelle = document.querySelector('[data-baustelle]');
+const baustelleZu = () => {
+    if (baustelle.hidden || baustelle.classList.contains('is-zu')) return;
+    baustelle.classList.add('is-zu');
+    document.body.style.overflow = '';
+    setTimeout(() => (baustelle.hidden = true), 450);
+};
+document.body.style.overflow = 'hidden';
+baustelle.querySelectorAll('[data-baustelle-zu]').forEach((el) => el.addEventListener('click', baustelleZu));
+baustelle.querySelector('[data-baustelle-ok]').focus();
+baustelle.addEventListener('keydown', (e) => {
+    // El foco no sale del aviso mientras está abierto.
+    if (e.key !== 'Tab') return;
+    const foco = [...baustelle.querySelectorAll('button')];
+    const i = foco.indexOf(document.activeElement);
+    e.preventDefault();
+    foco[(i + (e.shiftKey ? foco.length - 1 : 1)) % foco.length].focus();
+});
+
 document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
-    if (!lightbox.hidden) schliessen();
+    if (!baustelle.hidden && !baustelle.classList.contains('is-zu')) baustelleZu();
+    else if (!lightbox.hidden) schliessen();
     else if (kopf.classList.contains('menu-offen')) setMenu(false);
 });

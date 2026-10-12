@@ -15,6 +15,10 @@ export function initMotion() {
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
+    // Aviso "en construcción" abierto: la página no se desplaza por detrás.
+    if (document.querySelector('.baustelle:not([hidden]):not(.is-zu)')) lenis.stop();
+    window.addEventListener('baustelle:auf', () => lenis.stop());
+    window.addEventListener('baustelle:zu', () => lenis.start());
   }
 
   const reveal = new IntersectionObserver(
