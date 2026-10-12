@@ -15,17 +15,17 @@ export default function Leistungen() {
       <div className="sticky top-0 flex h-svh flex-col items-center justify-center overflow-hidden pt-20 pb-6 md:pt-20">
         <div className="px-6 text-center">
           <p className="text-[11px] font-semibold tracking-[0.32em] text-mokka uppercase">Leistungen</p>
-          <h2 id="leistungen-titel" className="mt-3 text-4xl leading-[0.95] md:text-6xl">
+          <h2 id="leistungen-titel" className="mt-2 text-[clamp(1.9rem,5svh,2.25rem)] leading-[0.95] md:mt-3 md:text-6xl">
             Alles für deinen <em>Look</em>
           </h2>
         </div>
 
-        <div data-faecher className="relative mt-6 h-[min(92.5vw,412px,65svh)] w-full shrink-0 md:mt-10 md:h-[min(33.75vw,500px,60svh)]">
+        <div data-faecher className="relative mt-[2.5svh] h-[min(92.5vw,412px,45svh)] w-full shrink-0 md:mt-10 md:h-[min(33.75vw,500px,60svh)]">
           {leistungen.map((l, i) => (
             <article
               key={l.id}
               data-karte
-              className="karte absolute top-0 left-1/2 w-[min(74vw,330px,52svh)] md:w-[min(27vw,400px,52svh)]"
+              className="karte absolute top-0 left-1/2 w-[min(74vw,330px,36svh)] md:w-[min(27vw,400px,48svh)]"
               style={{ zIndex: i + 1 }}
             >
               <div className="relative aspect-[4/5] overflow-hidden rounded-t-full rounded-b-[2rem] bg-blush shadow-[0_30px_60px_-25px_rgb(36_21_15/0.55)]">
@@ -35,7 +35,7 @@ export default function Leistungen() {
                 <div data-karte-text className="absolute inset-x-0 bottom-0 p-5 text-creme md:p-6">
                   <p className="text-[10px] font-semibold tracking-[0.3em] text-rose uppercase">0{i + 1}</p>
                   <h3 className="mt-1 text-3xl leading-none md:text-4xl">{l.name}</h3>
-                  <p className="mt-2 text-sm leading-snug text-creme/80">{l.text}</p>
+                  <p className="mt-2 text-sm leading-snug text-creme/80 max-md:[@media(max-height:680px)]:hidden">{l.text}</p>
                   <p className="mt-3 inline-block rounded-full bg-creme/15 px-3 py-1 text-xs font-semibold ring-1 ring-creme/25">{l.preis}</p>
                 </div>
               </div>
@@ -44,7 +44,7 @@ export default function Leistungen() {
         </div>
 
         {/* Bajo las tarjetas: un hilo dorado se dibuja de lado a lado y a su paso aparecen las ventajas. */}
-        <div data-vorteile className="relative mt-8 w-full max-w-5xl px-6 md:mt-12">
+        <div data-vorteile className="relative mt-[3svh] w-full max-w-5xl px-6 md:mt-12">
           <div data-hilo-box className="absolute inset-x-6 top-1/2 h-16 -translate-y-1/2" aria-hidden="true">
             <svg viewBox="0 0 1000 60" preserveAspectRatio="none" className="size-full">
               <defs>
@@ -59,9 +59,9 @@ export default function Leistungen() {
             {/* Punto de luz en la punta del hilo mientras se dibuja. */}
             <span data-hilo-punkt className="absolute top-0 left-0 size-3 -translate-1/2 rounded-full bg-[#fff3df] opacity-0 shadow-[0_0_12px_4px_rgb(216_178_124/0.8)]" />
           </div>
-          <ul className="relative grid grid-cols-2 gap-x-3 gap-y-6 md:grid-cols-4 md:gap-12">
+          <ul className="relative grid grid-cols-2 gap-x-3 gap-y-[2svh] md:grid-cols-4 md:gap-12">
             {vorteile.map((v) => (
-              <li key={v.text} data-vorteil className="flex items-center gap-3 rounded-full bg-creme px-4 py-3 text-sm font-semibold shadow-[0_10px_30px_-18px_rgb(36_21_15/0.5)] ring-1 ring-kakao/8 md:justify-center md:text-[15px]">
+              <li key={v.text} data-vorteil className="flex items-center gap-3 rounded-full bg-creme px-4 py-[min(12px,1.4svh)] text-[13px] font-semibold md:py-3 shadow-[0_10px_30px_-18px_rgb(36_21_15/0.5)] ring-1 ring-kakao/8 md:justify-center md:text-[15px]">
                 <svg viewBox="0 0 24 24" className="size-5 shrink-0 text-mokka" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path data-vorteil-icono d={v.icono} pathLength={1} style={{ strokeDasharray: 1, strokeDashoffset: 1 }} />
                 </svg>

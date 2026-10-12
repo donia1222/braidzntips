@@ -3,8 +3,8 @@ import NagelLeiste from './NagelLeiste';
 import type { ReactNode } from 'react';
 import { recorridos } from '../data/escenas';
 
-const title = 'mt-4 text-5xl leading-[0.95] md:text-7xl';
-const body = 'mt-5 max-w-lg text-base text-creme/80 md:text-lg';
+const title = 'mt-3 text-[clamp(2.1rem,6.2svh,3rem)] leading-[0.95] md:mt-4 md:text-7xl';
+const body = 'mt-[min(1.25rem,2svh)] max-w-lg text-[15px] text-creme/80 md:mt-5 md:text-lg';
 
 // Texto de cada parada, por id de escena: así sirve para los dos órdenes del recorrido.
 const textos: Record<string, { eyebrow: string; inhalt: ReactNode }> = {
@@ -55,7 +55,7 @@ const textos: Record<string, { eyebrow: string; inhalt: ReactNode }> = {
 };
 
 const botones = (
-  <div className="mt-8 flex flex-wrap justify-center gap-3">
+  <div className="mt-[min(2rem,3.5svh)] flex flex-wrap justify-center gap-3">
     <a href="#termin" className="btn btn-rose">
       Termin anfragen
     </a>
